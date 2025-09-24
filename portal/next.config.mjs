@@ -1,1 +1,1 @@
-export default { output: 'export' }
+export default {}
