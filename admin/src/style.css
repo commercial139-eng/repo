@@ -1,0 +1,17 @@
+
+:root { color-scheme: dark; }
+body { margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, Roboto; background:#0b1623; color:#e6eef7; }
+.card { background: linear-gradient(140deg, #0a1320, #0d1a2a); border:1px solid rgba(0,255,255,.2); border-radius:14px; padding:16px; }
+input, select, button, textarea { padding:10px 12px; border-radius:10px; border:1px solid #2b3c53; background:#0f2032; color:#e6eef7 }
+label { display:block; font-size:12px; opacity:.8; margin-bottom:6px }
+.row { display:grid; grid-template-columns: repeat(6, 1fr); gap:12px; }
+.row-2 { display:grid; grid-template-columns: repeat(2, 1fr); gap:12px; }
+.toolbar { display:flex; gap:12px; align-items:center; justify-content:space-between; margin-bottom:18px; }
+table { width: 100%; border-collapse: collapse; } th, td { padding:10px; border-bottom:1px solid #243246; }
+.tag { padding:4px 8px; border-radius:8px; border:1px solid #3a4a63; background:#0f2032; font-size:12px; }
+.pill { padding:6px 10px; border-radius:10px; font-weight:700; }
+.pill-buy { background:#00d084; color:#05351f; } .pill-sell { background:#ff4d8d; color:white; }
+.headline { font-weight:800; letter-spacing:.4px; }
+.container { max-width:1100px; margin:28px auto; padding:0 16px; }
+.btn-primary { background:#00d084; border-color:#00d084; color:#062412; font-weight:700; cursor:pointer }
+.btn-danger { background:#ff4d8d; border-color:#ff4d8d; color:white; font-weight:700; cursor:pointer }
