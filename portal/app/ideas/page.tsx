@@ -6,7 +6,7 @@ import { collection, onSnapshot, orderBy, query, doc, onSnapshot as onDocSnapsho
 import { onAuthStateChanged } from 'firebase/auth'
 
 function exitOf(i:any): number | undefined {
-  const v = i?.exitPrice ?? i?.exit ?? i?.closedPrice
+  const v = i?.exitPrice ?? i?.exit ?? i?.currentPrice
   return (typeof v === 'number') ? v : undefined
 }
 
