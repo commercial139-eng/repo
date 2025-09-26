@@ -1,23 +1,47 @@
-
 'use client'
-import { auth } from '../../lib/firebase'
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'firebase/auth'
-import { useState } from 'react'
+import { auth, db } from '../../lib/firebase'
+import { createUserWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth'
+import { setDoc, doc, serverTimestamp } from 'firebase/firestore'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 
 export default function AuthPage() {
   const [email,setEmail]=useState('')
   const [password,setPassword]=useState('')
   const [msg,setMsg]=useState('')
+  const r = useRouter()
+
+  // Se già loggato, vai alle idee
+  useEffect(() => {
+    const off = onAuthStateChanged(auth, u => { if (u) r.replace('/ideas') })
+    return () => off()
+  }, [r])
+
+  async function register() {
+    setMsg('')
+    try {
+      const cred = await createUserWithEmailAndPassword(auth, email, password)
+      // Crea/aggiorna subito il doc utente (attivo: false finché l’admin non abilita)
+      await setDoc(doc(db, 'users', cred.user.uid), {
+        email,
+        createdAt: serverTimestamp(),
+        active: false
+      }, { merge: true })
+      setMsg('Registrato')
+      r.replace('/ideas')
+    } catch (e:any) {
+      setMsg(e.message)
+    }
+  }
+
   return (
     <div className="card">
-      <h2>Login / Registrazione</h2>
+      <h2>Registrazione</h2>
       <div style={{display:'grid', gap:8, maxWidth:420}}>
         <input placeholder="Email" value={email} onChange={e=>setEmail(e.target.value)} />
         <input placeholder="Password" type="password" value={password} onChange={e=>setPassword(e.target.value)} />
         <div style={{display:'flex', gap:8}}>
-          <button onClick={async()=>{ await signInWithEmailAndPassword(auth,email,password); setMsg('Login ok') }}>Login</button>
-          <button onClick={async()=>{ await createUserWithEmailAndPassword(auth,email,password); setMsg('Registrato') }}>Registrati</button>
-          <button onClick={async()=>{ await signOut(auth); setMsg('Logout') }}>Logout</button>
+          <button onClick={register}>Registrati</button>
         </div>
         <p>{msg}</p>
       </div>
