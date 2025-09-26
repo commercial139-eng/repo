@@ -2,7 +2,7 @@ import React from 'react'
 import { db, auth } from '../firebase'
 import { collection, query, orderBy, limit, onSnapshot, deleteDoc, doc, addDoc, serverTimestamp } from 'firebase/firestore'
 
-type Msg = { id: string; text: string; email?: string; senderUid?: string; senderName?: string; displayName?: string; createdAt?: any }
+type Msg = { id: string; text: string; email?: string; senderUid?: string; displayName?: string; createdAt?: any }
 
 export default function ChatAdmin() {
   const [messages, setMessages] = React.useState<Msg[]>([])
@@ -26,9 +26,8 @@ export default function ChatAdmin() {
     try {
       await addDoc(collection(db, 'rooms', 'general', 'messages'), {
         text,
-        email: u?.email ?? '',         // compat con vecchi client
+        //email: u?.email ?? '',         // compat con vecchi client
         senderUid: u?.uid ?? '',
-        senderName: 'admin',// 👈 forziamo “admin” come nome mittente
         displayName: 'admin',
         createdAt: serverTimestamp(),
       })
@@ -61,7 +60,7 @@ export default function ChatAdmin() {
       <div style={{display:'grid', gap:8, marginBottom:12, maxHeight:'60vh', overflow:'auto', paddingRight:4}}>
         {messages.map(m => {
           const mine = m.senderUid && myUid && m.senderUid === myUid
-          const name = mine ? 'admin' : (typeof m.displayName === 'string' ? m.displayName :  '(anon)')
+          const name = mine ? 'admin' : ( m.displayName ?? '(anon)')
           return (
             <div key={m.id} style={{ display:'flex', justifyContent: mine ? 'flex-end' : 'flex-start' }}>
               <div
