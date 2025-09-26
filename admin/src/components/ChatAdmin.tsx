@@ -27,7 +27,7 @@ export default function ChatAdmin() {
       await addDoc(collection(db, 'rooms', 'general', 'messages'), {
         text,
         //email: u?.email ?? '',         // compat con vecchi client
-        senderUid: u?.uid ?? '',
+        uid: u?.uid ?? '',
         displayName: 'admin',
         createdAt: serverTimestamp(),
       })
