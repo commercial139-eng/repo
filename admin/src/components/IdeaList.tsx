@@ -28,25 +28,11 @@ export default function IdeaList() {
     if (!id) return
     await updateStopsFn({ id, stopLoss: sl, takeProfit: tp })
   }
- async function closeIdea(id?: string, exitPrice?: number) {
+async function closeIdea(id?: string, exitPrice?: number) {
   if (!id) return
-  const exit = (typeof exitPrice === 'number' && Number.isFinite(exitPrice)) ? exitPrice : undefined
-
-  // continua a chiamare la CF per compatibilità
-  await closeIdeaFn({ id, currentPrice: exit })
-
-  // garantisci i campi anche sul doc
-  try {
-    await updateDoc(doc(db, 'ideas', id), {
-      ...(exit !== undefined ? { exitPrice: exit } : {}),
-      //status: 'CHIUSA',
-      closedAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    })
-  } catch (e) {
-    console.error('update exitPrice/status failed:', e)
-  }
+  await closeIdeaFn({ id, currentPrice: exitPrice })
 }
+
 
 
   return (
