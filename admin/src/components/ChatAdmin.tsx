@@ -2,7 +2,7 @@ import React from 'react'
 import { db, auth } from '../firebase'
 import { collection, query, orderBy, limit, onSnapshot, deleteDoc, doc, addDoc, serverTimestamp } from 'firebase/firestore'
 
-type Msg = { id: string; text: string; email?: string; senderUid?: string; senderName?: string; createdAt?: any }
+type Msg = { id: string; text: string; email?: string; senderUid?: string; senderName?: string; displayName?: string; createdAt?: any }
 
 export default function ChatAdmin() {
   const [messages, setMessages] = React.useState<Msg[]>([])
