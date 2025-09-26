@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { auth, db } from '../../lib/firebase'
 import { doc, onSnapshot } from 'firebase/firestore'
-import { onAuthStateChanged } from 'firebase/auth'
+import { onAuthStateChanged, signOut } from 'firebase/auth'
 
 export default function ProfilePage() {
   const [ready, setReady] = useState(false)
@@ -48,6 +48,9 @@ export default function ProfilePage() {
       </div>
       <div style={{marginTop:12}}>
         <p style={{opacity:.75}}>Se il tuo account è inattivo o scaduto, contatta l'amministratore.</p>
+      </div>
+      <div style={{marginTop:12, display:'flex', gap:8}}>
+      <button onClick={async () => { await signOut(auth) }}>Logout</button>
       </div>
       <style jsx>{`
         .card { background: linear-gradient(140deg, #0a1320, #0d1a2a); border:1px solid rgba(0,255,255,.2); border-radius:14px; padding:16px; }
