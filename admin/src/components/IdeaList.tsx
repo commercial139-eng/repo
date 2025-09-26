@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react'
-import { collection, onSnapshot, orderBy, query } from 'firebase/firestore'
+import { collection, onSnapshot, orderBy, query, doc, updateDoc, serverTimestamp } from 'firebase/firestore'
 import { httpsCallable } from 'firebase/functions'
 import { db, functions } from '../firebase'
 import type { Idea } from '../types'
@@ -28,10 +28,26 @@ export default function IdeaList() {
     if (!id) return
     await updateStopsFn({ id, stopLoss: sl, takeProfit: tp })
   }
-  async function closeIdea(id?: string, exitPrice?: number) {
-    if (!id) return
-    await closeIdeaFn({ id, currentPrice: exitPrice })
+ async function closeIdea(id?: string, exitPrice?: number) {
+  if (!id) return
+  const exit = (typeof exitPrice === 'number' && Number.isFinite(exitPrice)) ? exitPrice : undefined
+
+  // continua a chiamare la CF per compatibilità
+  await closeIdeaFn({ id, currentPrice: exit })
+
+  // garantisci i campi anche sul doc
+  try {
+    await updateDoc(doc(db, 'ideas', id), {
+      ...(exit !== undefined ? { exitPrice: exit } : {}),
+      //status: 'CHIUSA',
+      closedAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    })
+  } catch (e) {
+    console.error('update exitPrice/status failed:', e)
   }
+}
+
 
   return (
     <div className="card">
