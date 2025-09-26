@@ -59,7 +59,7 @@ export default function ChatAdmin() {
       {/* lista messaggi */}
       <div style={{display:'grid', gap:8, marginBottom:12, maxHeight:'60vh', overflow:'auto', paddingRight:4}}>
         {messages.map(m => {
-          const mine = m.senderUid && myUid && m.senderUid === myUid
+          const mine = m.uid && myUid && m.uid === myUid
           const name = mine ? 'admin' : (typeof m.displayName === 'string' ? m.displayName : '(anon)')
           return (
             <div key={m.id} style={{ display:'flex', justifyContent: mine ? 'flex-end' : 'flex-start' }}>
