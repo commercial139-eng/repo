@@ -2,7 +2,7 @@ import React from 'react'
 import { db, auth } from '../firebase'
 import { collection, query, orderBy, limit, onSnapshot, deleteDoc, doc, addDoc, serverTimestamp } from 'firebase/firestore'
 
-type Msg = { id: string; text: string; email?: string; senderUid?: string; displayName?: string; createdAt?: any }
+type Msg = { id: string; text: string; email?: string; senderUid?: string; uid?: string; displayName?: string; createdAt?: any }
 
 export default function ChatAdmin() {
   const [messages, setMessages] = React.useState<Msg[]>([])
@@ -60,7 +60,7 @@ export default function ChatAdmin() {
       <div style={{display:'grid', gap:8, marginBottom:12, maxHeight:'60vh', overflow:'auto', paddingRight:4}}>
         {messages.map(m => {
           const mine = m.senderUid && myUid && m.senderUid === myUid
-          const name = mine ? 'admin' : ( m.displayName ?? '(anon)')
+          const name = mine ? 'admin' : (typeof m.displayName === 'string' ? m.diplayName : '(anon)')
           return (
             <div key={m.id} style={{ display:'flex', justifyContent: mine ? 'flex-end' : 'flex-start' }}>
               <div
