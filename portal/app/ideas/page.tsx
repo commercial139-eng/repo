@@ -5,6 +5,32 @@ import { auth, db } from '../../lib/firebase'
 import { collection, onSnapshot, orderBy, query, doc, onSnapshot as onDocSnapshot, setDoc, serverTimestamp } from 'firebase/firestore'
 import { onAuthStateChanged } from 'firebase/auth'
 
+function exitOf(i:any): number | undefined {
+  const v = i?.exitPrice ?? i?.exit ?? i?.closedPrice
+  return (typeof v === 'number') ? v : undefined
+}
+
+function StatusPill({ i }: { i:any }) {
+  const exit = exitOf(i)
+  const tp   = (typeof i?.takeProfit === 'number') ? i.takeProfit : undefined
+  const sl   = (typeof i?.stopLoss   === 'number') ? i.stopLoss   : undefined
+  const EPS  = 1e-5
+
+  if (i?.status === 'ATTIVO') {
+    return <span className="pill pill-active">ATTIVO</span>
+  }
+  if (exit != null && tp != null && Math.abs(exit - tp) <= EPS) {
+    return <span className="pill pill-ok">Take Profit ✅</span>
+  }
+  if (exit != null && sl != null && Math.abs(exit - sl) <= EPS) {
+    return <span className="pill pill-bad">Stop Loss</span>
+  }
+  if (i?.status === 'CHIUSA') {
+    return <span className="pill">CHIUSA</span>
+  }
+  return null
+}
+
 export default function IdeasPage() {
   const [ideas, setIdeas] = useState<any[]>([])
   const [ready, setReady] = useState(false)
@@ -53,8 +79,12 @@ export default function IdeasPage() {
           <div key={i.id} className="card">
             <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
               <strong style={{fontSize:18}}>{i.symbol}</strong>
+              <div style={{display:'flex', gap:8, alignItems:'center'}}>
+              <StatusPill i={i} />
               <span className={`pill ${i.direction==='BUY'?'pill-buy':'pill-sell'}`}>{i.direction}</span>
             </div>
+          </div>
+
             <div style={{marginTop:8, display:'grid', gap:6}}>
               <CopyRow label="Entry" value={i.entry?.toFixed?.(5)} />
               {typeof i.stopLoss === 'number' && <CopyRow label="SL" value={i.stopLoss.toFixed(5)} color="#ff4d8d" />}
@@ -78,6 +108,9 @@ export default function IdeasPage() {
         .pill-buy { background:#00d084; color:#05351f; } .pill-sell { background:#ff4d8d; color:white; }
         .copyrow { display:flex; align-items:center; gap:8px; }
         .copybtn { padding:4px 8px; border-radius:8px; border:1px solid #2b3c53; background:#0f2032; color:#e6eef7; cursor:pointer; font-size:12px; }
+        .pill-active { background:#22d3ee; color:#06252a; }
+        .pill-ok     { background:#16a34a; color:#052e16; }
+        .pill-bad    { background:#ef4444; color:#fff; }
       `}</style>
     </div>
   )
