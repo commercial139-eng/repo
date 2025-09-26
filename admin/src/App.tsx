@@ -3,7 +3,7 @@ import React from 'react'
 import Login from './components/Login'
 import AdminPanel from './components/AdminPanel'
 import ChatAdmin from './components/ChatAdmin'
-import { onAuthStateChanged } from 'firebase/auth'
+import { onAuthStateChanged, signOut } from 'firebase/auth'
 import { auth, db } from './firebase'
 import { doc, onSnapshot, setDoc, serverTimestamp } from 'firebase/firestore'
 
