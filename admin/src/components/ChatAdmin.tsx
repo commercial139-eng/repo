@@ -1,6 +1,6 @@
 import React from 'react'
-import { db } from '../firebase'
-import { collection, query, orderBy, limit, onSnapshot, deleteDoc, doc } from 'firebase/firestore'
+import { db, auth } from '../firebase'
+import { collection, query, orderBy, limit, onSnapshot, deleteDoc, doc, addDoc, serverTimestamp } from 'firebase/firestore'
 
 type Msg = { id: string; text: string; email?: string; createdAt?: any }
 
