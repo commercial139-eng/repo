@@ -16,7 +16,7 @@ export default function IdeaForm({ onPosted }: { onPosted: ()=>void }) {
   const [note, setNote] = useState('Solo uso conto demo (DAU)')
   const [style, setStyle] = useState('INTRA-DAY')
   const [status, setStatus] = useState<'ATTIVO'|'CHIUSO'>('ATTIVO')
-  const [author, setAuthor] = useState('Cam')
+  const [author, setAuthor] = useState('Admin')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
