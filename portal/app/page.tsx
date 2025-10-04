@@ -26,7 +26,7 @@ export default function Page() {
     try { 
       const key = unameKey(username)
       if (!key) throw new Error("Inserisci username")
-      const snap = await getDoc(doc(db, 'username', key))
+      const snap = await getDoc(doc(db, 'usernames', key))
       if (!snap.exists()) throw new Error("Username inesistente")
       const mappedEmail = snap.data()?.email as string
       await signInWithEmailAndPassword(auth, mappedEmail, password); r.replace("/ideas"); }
