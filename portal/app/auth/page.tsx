@@ -12,6 +12,8 @@ export default function AuthPage() {
   const [msg,setMsg]=useState('')
   const r = useRouter()
 
+  const unameKey = (s:string) => s.trim().toLowerCase()
+
   // Se già loggato, vai alle idee
   useEffect(() => {
     const off = onAuthStateChanged(auth, u => { if (u) r.replace('/ideas') })
