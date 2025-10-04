@@ -33,7 +33,7 @@ export default function ProfilePage() {
 
   const isActive = !!userDoc?.active
   const isAdmin = !!userDoc?.admin
-  const username = !!userDoc?.displayName
+  const username = userDoc?.displayName
   const exp = userDoc?.expiresAt?.toDate ? userDoc.expiresAt.toDate() : null
   const updatedAt = userDoc?.updatedAt?.toDate ? userDoc.updatedAt.toDate().toLocaleString() : '—'
 
