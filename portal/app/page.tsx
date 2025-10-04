@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { auth } from "../lib/firebase";
+import { auth, db } from "../lib/firebase";
 import {doc, getDoc, setDoc} from 'firebase/firestore'
 
 const card: React.CSSProperties = { maxWidth: 420, margin: "0 auto",
