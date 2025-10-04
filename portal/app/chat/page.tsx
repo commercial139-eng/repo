@@ -40,7 +40,7 @@ export default function ChatPage() {
     const user = auth.currentUser
     if (!user || !text.trim()) return
     await addDoc(collection(db,'rooms','general','messages'), {
-      text, uid: user.uid, displayName: user.email || 'user', createdAt: serverTimestamp()
+      text, uid: user.uid, displayName: user.displayName || 'user', createdAt: serverTimestamp()
     })
     setText('')
   }
