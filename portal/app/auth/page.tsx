@@ -1,11 +1,12 @@
 'use client'
 import { auth, db } from '../../lib/firebase'
-import { createUserWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth'
+import { createUserWithEmailAndPassword, onAuthStateChanged, deleteUser } from 'firebase/auth'
 import { setDoc, doc, serverTimestamp } from 'firebase/firestore'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 
 export default function AuthPage() {
+  const [username, setUsername] = useState('')
   const [email,setEmail]=useState('')
   const [password,setPassword]=useState('')
   const [msg,setMsg]=useState('')
@@ -20,17 +21,28 @@ export default function AuthPage() {
   async function register() {
     setMsg('')
     try {
+      const key = unameKey(username)
+      if (!/^[a-z0-9._-]{3,20}$/.test(key)) throw new Error('Username non valido')
+      if (!email) throw new Error('Email obbligatoria')
       const cred = await createUserWithEmailAndPassword(auth, email, password)
-      // Crea/aggiorna subito il doc utente (attivo: false finché l’admin non abilita)
-      await setDoc(doc(db, 'users', cred.user.uid), {
-        email,
-        createdAt: serverTimestamp(),
-        active: false
+      const uid = cred.user.uid
+
+      // riserva username (docId = usernameLower) → fallirà se già esiste (con le regole giuste)
+      await setDoc(doc(db,'usernames', key), {
+        uid, email, createdAt: serverTimestamp()
+      }, { merge: false })
+
+      // profilo utente (displayName)
+      await setDoc(doc(db,'users', uid), {
+        displayName: username, email, updatedAt: serverTimestamp(), active: false
       }, { merge: true })
+
       setMsg('Registrato')
       r.replace('/ideas')
     } catch (e:any) {
-      setMsg(e.message)
+      // rollback se username fallisce dopo createUser
+      if (auth.currentUser) { try { await deleteUser(auth.currentUser!) } catch {} }
+      setMsg(e?.message || 'Errore registrazione')
     }
   }
 
@@ -38,6 +50,7 @@ export default function AuthPage() {
     <div className="card">
       <h2>Registrazione</h2>
       <div style={{display:'grid', gap:8, maxWidth:420}}>
+        <input placeholder="Username" value={username} onChange={e=>setUsername(e.target.value)} /> 
         <input placeholder="Email" value={email} onChange={e=>setEmail(e.target.value)} />
         <input placeholder="Password" type="password" value={password} onChange={e=>setPassword(e.target.value)} />
         <div style={{display:'flex', gap:8}}>
