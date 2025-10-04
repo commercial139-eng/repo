@@ -33,6 +33,7 @@ export default function ProfilePage() {
 
   const isActive = !!userDoc?.active
   const isAdmin = !!userDoc?.admin
+  const username = !!userDoc?.displayName
   const exp = userDoc?.expiresAt?.toDate ? userDoc.expiresAt.toDate() : null
   const updatedAt = userDoc?.updatedAt?.toDate ? userDoc.updatedAt.toDate().toLocaleString() : '—'
 
@@ -40,7 +41,7 @@ export default function ProfilePage() {
     <div className="card">
       <h2>Profilo</h2>
       <div style={{display:'grid', gap:10}}>
-        <Row k="UID" v={userId} />
+        <Row k="Username" v={username} />
         <Row k="Account attivo" v={isActive ? 'Sì' : 'No'} />
         <Row k="Admin" v={isAdmin ? 'Sì' : 'No'} />
         <Row k="Scadenza" v={exp ? exp.toLocaleString() : '—'} />
