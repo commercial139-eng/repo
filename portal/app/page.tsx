@@ -15,13 +15,20 @@ const btn: React.CSSProperties = { width:"100%", padding:"10px 12px", borderRadi
 
 export default function Page() {
   const r = useRouter();
-  const [email,setEmail]=useState(""); const [password,setPassword]=useState(""); const [msg,setMsg]=useState("");
-
+  const [email,setEmail]=useState(""); const [password,setPassword]=useState(""); const [msg,setMsg]=useState(""); const [username, setUsername] = useState('')
+  const unameKey =(s:string) => s.trim().toLowerCase()
+  
   useEffect(()=> onAuthStateChanged(auth, u => { if (u) r.replace("/ideas") }), [r]);
 
   async function login(e: React.FormEvent) {
     e.preventDefault(); setMsg("");
-    try { await signInWithEmailAndPassword(auth, email, password); r.replace("/ideas"); }
+    try { 
+      const key = unameKey(username)
+      if (!key) throw new Error("Inserisci username")
+      const snap = await getDoc(doc(db, 'username', key))
+      if (!snap.exists()) throw new Error("Username inesistente")
+      const mappedEmail = snap.data()?.email as string
+      await signInWithEmailAndPassword(auth, mappedEmail, password); r.replace("/ideas"); }
     catch(e:any){ setMsg(e.message); }
   }
 
@@ -29,7 +36,7 @@ export default function Page() {
     <div style={card}>
       <h1 style={{ fontSize:22, fontWeight:700, marginBottom:12 }}>Accedi</h1>
       <form onSubmit={login} style={{ display:"grid", gap: 10 }}>
-        <input style={inputS} type="email" placeholder="Email" value={email} onChange={e=>setEmail(e.target.value)} />
+        <input style={inputS} type="username" placeholder="Username" value={username} onChange={e=>setUsername(e.target.value)} />
         <input style={inputS} type="password" placeholder="Password" value={password} onChange={e=>setPassword(e.target.value)} />
         <button style={btn}>Entra</button>
       </form>
